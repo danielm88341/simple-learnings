@@ -63,7 +63,7 @@ function init() {
         });
         let wMaterial = new THREE.MeshLambertMaterial({
             color: 0xFFFFFFF,
-            wireframe: false,
+            wireframe: true,
             transparent: true,
             opacity: 0.03,
             side: THREE.DoubleSide
@@ -100,7 +100,7 @@ function init() {
     })
     let gParticular = new THREE.CircleGeometry(0.01, 3);
     let aParticular = 5;
-    for (let h = 0; h < 300; h++) {
+    for (let h = 1; h < 300; h++) {
         let particular = new THREE.Mesh(gParticular, gMaterial);
         particular.position.set(mathRandom(aParticular), mathRandom(aParticular), mathRandom(aParticular));
         particular.rotation.set(mathRandom(), mathRandom(), mathRandom());
@@ -122,6 +122,127 @@ function init() {
     pElement.receiveShadow = true;
     city.add(pElement);
 }
+
+// Mouse Functions
+let raycaster = new THREE.Raycaster();
+let mouse = new THREE.Vector2(), INTERSECTED;
+let intersected;
+
+function onMouseMove(e) {
+    e.preventDefault();
+    mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+}
+function onDocumentTouchStart(e) {
+    if(e.touches.length == 1) {
+        e.preventDefault();
+        mouse.x = e.touches[0].pageX - window.innerWidth / 2;
+        mouse.y = e.touches[0].pageY - window.innerHeight / 2;
+    }
+}
+
+function onDocumentTouchMove(e) {
+    if(e.touches.length == 1) {
+        e.preventDefault();
+        mouse.x = e.touches[0].pageX - window.innerWidth / 2;
+        mouse.y = e.touches[0].pageY - window.innerHeight / 2;
+    }
+}
+
+window.addEventListener('mousemove', onMouseMove, false);
+window.addEventListener('touchstart', onDocumentTouchStart, false);
+window.addEventListener('touchmove', onDocumentTouchMove, false);
+
+// Create Lights
+let ambientLight = new THREE.AmbientLight(0x111111, 5);
+let lightFront = new THREE.SpotLight(0xFFFFFF, 20, 10);
+let lightBack = new THREE.PointLight(0xFFFFFF, 0.5);
+let spotLightHelper = new THREE.SpotLightHelper(lightFront);
+
+lightFront.rotation.x = 45 * Math.PI / 180;
+lightFront.rotation.z = -45 * Math.PI / 180;
+lightFront.position.set(5,5,5);
+lightFront.castShadow = true;
+lightFront.shadow.mapSize.width = 6000;
+lightFront.shadow.mapSize.height = 6000;
+lightFront.penumbra = 0.1;
+lightBack.position.set(0,6,0);
+
+smoke.position.y = 2;
+scene.add(ambientLight);
+city.add(lightFront);
+scene.add(lightBack);
+scene.add(city);
+city.add(smoke);
+city.add(town);
+
+// Grid Helper
+let gridHelper = new THREE.GridHelper(60,120, 0xFF0000, 0x000000);
+city.add(gridHelper);
+
+// Cars World
+let createCars = function(cScale = 2, cPos = 20, cColor = 0xFFFF00){
+    let cMat = new THREE.MeshToonMaterial({
+        color: cColor,
+        side: THREE.DoubleSide
+    })
+    let cGeo = new THREE.CubeGeometry(1,cScale / 40, cScale / 40);
+    let cElem = new THREE.Mesh(cGeo, cMat);
+    let cAmp = 3;
+    if(createCarPos) {
+        createCarPos = false;
+        cElem.position.x = -cPos;
+        cElem.position.z = mathRandom(cAmp);
+        TweenMax.to(cElem.position, 3, { x: cPos, repeat: -1, yoyo: true, delay: mathRandom(3)})
+    } else {
+        createCarPos = true;
+        cElem.position.x = mathRandom(cAmp);
+        cElem.position.z = -cPos;
+        cElem.rotation.y = 90* Math.PI / 180;
+
+        TweenMax.to(cElem.position, 5, { z: cPos, repeat: -1, yoyo : true, delay : mathRandom(3), ease: Power1.easeInOut});
+        cElem.receiveShadow = true;
+        cElem.castShadow = true;
+        cElem.position.y = Math.abs(mathRandom(5));
+        city.add(cElem);
+    }
+}
+
+let generateLines = function() {
+    for(let i = 0; i < 60; i++) {
+        createCars(0.1, 1, 20);
+    }
+}
+
+// Camera POsition
+let cameraSet = function() {
+    createCars(0.1, 20, 0xFFFFFF)
+}
+
+// Animation functions
+let animate = function() {
+    let time = Date.now() * 0.00005;
+    requestAnimationFrame(animate);
+
+    city.rotation.y -= ((mouse.x * 8) - camera.rotation.y) * uSpeed;
+    city.rotation.x -= (-(mouse.y * 2) - camera.rotation.x) * uSpeed;
+    if(city.rotation.x < -0.05) {
+        city.rotation.x = -0.05;
+    } else if (city.rotation.x > 1) {
+        city.rotation.x = 1;
+    }
+    let cityRotation = Math.sin(Date.now() / 5000) * 13;
+    for(let i = 0, l = town.children.length; i < l; i++) {
+        let object = town.children[i];
+    }
+
+    smoke.rotation.y += 0.01;
+    smoke.rotation.x += 0.01;
+
+    camera.lookAt(city.position);
+    renderer.render(scene,camera);
+}
+
 
 // Calling Main Function
 generateLines();
