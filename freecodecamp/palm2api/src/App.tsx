@@ -1,24 +1,22 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 
 function App() {
+  // @ts-ignore
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="chat-bot">
+      <div className="chat-header">
+        <div className="infocontainer">
+          <h3>Chat with the</h3>
+          <h2>PaLM2 Bot</h2>
+        </div>
+        //svg
+      </div>
+      <div className="feed">
+        <div className="question bubble"></div>
+        <div className="response bubble"></div>
+      </div>
+      {/*<textarea name="input" id="chatinput" value="" onChange={}></textarea>*/}
+      {/*<button onClick={}>⇨</button>*/}
     </div>
   );
 }
