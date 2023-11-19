@@ -2,6 +2,8 @@ Link to video: https://www.youtube.com/watch?v=LHbtSrkTsIE
 https://developers.generativeai.google/products/palm
 https://makersuite.google.com/app/apikey
 
+SVG - source: https://app.haikei.app/
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
