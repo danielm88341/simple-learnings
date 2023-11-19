@@ -1,7 +1,7 @@
 Link to video: https://www.youtube.com/watch?v=LHbtSrkTsIE
 https://developers.generativeai.google/products/palm
 https://makersuite.google.com/app/apikey
-
+Learner source: https://github.com/kubowania/palm2-ai-chatbot/tree/main
 SVG - source: https://app.haikei.app/
 
 # Getting Started with Create React App
