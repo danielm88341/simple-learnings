@@ -1,9 +1,27 @@
 import React from 'react';
 import './index.css';
+import {useState } from "react";
 
 function App() {
+    const [text, setText] = useState('');
+    const [messages, setMessages] = useState<msg[]>([]);
+    console.log(messages);
+
+    const getResponse = async () => {
+        const response = await fetch(`http://localhost:8000/prompt/${text}`);
+        const data = await response.json();
+        console.log('data', data);
+        setMessages([ ...messages,
+            {
+            author: data.messages[0].content,
+            bot: data.candidates[0].content
+        }
+        ])
+        setText('')
+    }
+    console.log(text);
   // @ts-ignore
-  return (
+    return (
     <div className="chat-bot">
       <div className="chat-header">
         <div className="info-container">
@@ -15,14 +33,24 @@ function App() {
                     d="M0,224L60,218.7C120,213,240,203,360,186.7C480,171,600,149,720,154.7C840,160,960,192,1080,186.7C1200,181,1320,139,1380,117.3L1440,96L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"></path>
           </svg>
       </div>
-      <div className="feed">
-        <div className="question bubble"></div>
-        <div className="response bubble"></div>
-      </div>
-      <textarea name="input" id="chatinput" value="" ></textarea>
-      <button >⇨</button>
+        <div className="feed">
+            {messages?.map((message, _index) =>
+                <div key={_index}>
+                    <div className="question bubble">{message.author}</div>
+                    <div className="response bubble">{message.bot}</div>
+                </div>
+            )}
+        </div>
+      <textarea name="input" id="chatinput" value={text} onChange={e => setText(e.target.value)} ></textarea>
+      <button onClick={getResponse}>⇨</button>
     </div>
   );
 }
+
+interface msg {
+    author: string,
+    bot: string,
+}
+
 
 export default App;
