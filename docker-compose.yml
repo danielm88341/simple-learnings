@@ -1,0 +1,14 @@
+version: '3.5'
+
+services:
+  tabby:
+    container_name: tabby
+    restart: always
+    image: tabbyml/tabby
+    command: serve --model TabbyML/StarCoder-1B
+    volumes:
+      - "$HOME/.tabby:/data"
+    ports:
+      - 8080:8080
+    environment:
+      TABBY_DISABLE_USAGE_COLLECTION : 1
