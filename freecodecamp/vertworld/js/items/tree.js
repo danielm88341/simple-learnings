@@ -5,6 +5,9 @@ class Tree {
         this.height = height;
         this.base = this.#generateLevel(center, size);
     }
+    static load(info) {
+        return new Tree(Polygon.load(info.base), info.height);
+    }
 
     #generateLevel(point, size) {
         const points = [];

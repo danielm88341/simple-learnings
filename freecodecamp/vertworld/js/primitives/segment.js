@@ -7,8 +7,9 @@ class Segment {
     length() {
         return distance(this.p1, this.p2);
     }
+
     directionVector() {
-        return normalize(subtract(this.p2, this.p1))
+        return normalize(subtract(this.p2, this.p1));
     }
 
     equals(seg) {
@@ -18,6 +19,7 @@ class Segment {
     includes(point) {
         return this.p1.equals(point) || this.p2.equals(point);
     }
+
     distanceToPoint(point) {
         const proj = this.projectPoint(point);
         if (proj.offset > 0 && proj.offset < 1) {
@@ -40,10 +42,11 @@ class Segment {
         return proj;
     }
 
-    draw(ctx, { width = 2, color = "black", dash = [] } = {}) {
+    draw(ctx, { width = 2, color = "black", dash = [], cap = "butt" } = {}) {
         ctx.beginPath();
         ctx.lineWidth = width;
         ctx.strokeStyle = color;
+        ctx.lineCap = cap;
         ctx.setLineDash(dash);
         ctx.moveTo(this.p1.x, this.p1.y);
         ctx.lineTo(this.p2.x, this.p2.y);
