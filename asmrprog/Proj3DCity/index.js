@@ -72,7 +72,7 @@ function init() {
         let cube = new THREE.Mesh(geometry, material);
         let wire = new THREE.Mesh(geometry, material);
         let floor = new THREE.Mesh(geometry, material);
-        let wFloor = new THREE.Mesh(geometry, material);
+        let qwFloor = new THREE.Mesh(geometry, material);
 
         cube.add(wFloor);
         cube.setShadow = true;
