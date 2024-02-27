@@ -24,6 +24,9 @@ class World {
 
         this.markings = [];
 
+        this.cars = [];
+        this.bestCar = null;
+
         this.frameCount = 0;
 
         this.generate();
@@ -263,14 +266,16 @@ class World {
         this.frameCount++;
     }
 
-    draw(ctx, viewPoint) {
+    draw(ctx, viewPoint, showStartMarkings = true, renderRadius = 1000) {
         this.#updateLights();
 
         for (const env of this.envelopes) {
             env.draw(ctx, { fill: "#BBB", stroke: "#BBB", lineWidth: 15 });
         }
         for (const marking of this.markings) {
-            marking.draw(ctx);
+            if (!(marking instanceof Start) || showStartMarkings) {
+                marking.draw(ctx);
+            }
         }
         for (const seg of this.graph.segments) {
             seg.draw(ctx, { color: "white", width: 4, dash: [10, 10] });
@@ -279,7 +284,18 @@ class World {
             seg.draw(ctx, { color: "white", width: 4 });
         }
 
-        const items = [...this.buildings, ...this.trees];
+        ctx.globalAlpha = 0.2;
+        for (const car of this.cars) {
+            car.draw(ctx);
+        }
+        ctx.globalAlpha = 1;
+        if(this.bestCar) {
+            this.bestCar.draw(ctx, true);
+        }
+
+        const items = [...this.buildings, ...this.trees].filter(
+            (i) => i.base.distanceToPoint(viewPoint) < renderRadius
+        );
         items.sort(
             (a, b) =>
                 b.base.distanceToPoint(viewPoint) -
